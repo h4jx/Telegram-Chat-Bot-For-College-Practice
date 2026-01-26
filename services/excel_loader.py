@@ -12,7 +12,6 @@ class ExcelLoader:
 
         name = (message.document.file_name or "").lower()
         if not name.endswith((".xlsx", ".xlsm", ".xltx", ".xltm")):
-            # openpyxl не читает .xls (старый Excel)
             raise ValueError("Нужен файл .xlsx/.xlsm (если у вас .xls — сохраните как .xlsx)")
 
         buf = BytesIO()
@@ -20,3 +19,4 @@ class ExcelLoader:
         buf.seek(0)
 
         return openpyxl.load_workbook(buf, data_only=True)
+
