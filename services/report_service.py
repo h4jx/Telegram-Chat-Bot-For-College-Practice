@@ -8,7 +8,7 @@ class ReportService:
     def __init__(self):
         self._reports = {
             "topics": TopicsFormatReport(),
-            "schedule": ScheduleCountReport(),  # пока заглушка, но режим уже есть
+            "schedule": ScheduleCountReport(),
         }
 
     def build(self, key: str, wb: openpyxl.Workbook) -> str:
@@ -16,3 +16,4 @@ class ReportService:
         if not report:
             return "Неизвестный тип отчёта."
         return report.build(wb)
+
