@@ -42,15 +42,12 @@ async def main():
     reports = ReportService()
     doc_handler = DocumentHandler(loader=loader, reports=reports, user_state=user_state)
 
-    # /start
     dp.message.register(start_command, CommandStart())
 
-    # команды
     mode_handlers = ModeHandlers(user_state)
     dp.message.register(mode_handlers.topics, Command("topics"))
     dp.message.register(mode_handlers.schedule, Command("schedule"))
 
-    # загрузка Excel
     dp.message.register(doc_handler.handle, F.document)
 
     await dp.start_polling(bot)
@@ -58,3 +55,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
