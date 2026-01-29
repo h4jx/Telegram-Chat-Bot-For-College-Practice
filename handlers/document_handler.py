@@ -19,7 +19,9 @@ class DocumentHandler:
             await message.answer(
                 "❗ Сначала выберите задание:\n"
                 "• /schedule — отчёт по расписанию\n"
-                "• /topics — отчёт по темам занятия"
+                "• /topics — отчёт по темам занятия\n"
+                "• /students — отчёт по оценкам студентов\n"
+                "• / topics — отчёт по темам занятия"
             )
             return
 
@@ -27,7 +29,6 @@ class DocumentHandler:
             wb = await self.loader.load_workbook_from_message(message, bot)
             result = self.reports.build(mode, wb)
 
-            # сброс режима после успешной обработки
             self.user_state.pop(message.from_user.id, None)
 
             await send_long_message(message, result)

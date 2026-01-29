@@ -39,4 +39,3 @@ async def send_long_message(message: Message, text: str):
     parts = split_text(text)
     for i, part in enumerate(parts, start=1):
         await message.answer(part)
-

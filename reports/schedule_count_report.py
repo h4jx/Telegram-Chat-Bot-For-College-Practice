@@ -14,12 +14,7 @@ class ScheduleCountReport(BaseReport):
     SUBJECT_RE = re.compile(r"Предмет:\s*(.+)")
 
     def _find_lesson_columns(self, ws: openpyxl.worksheet.worksheet.Worksheet) -> List[int]:
-        """
-        В твоем файле:
-        A: Группа, B: Пара, C: Время,
-        дальше идут колонки дней недели, а между ними колонки "Время".
-        Нужно взять только колонки дней недели (где лежит текст с "Предмет: ...").
-        """
+
         cols: List[int] = []
         for c in range(1, ws.max_column + 1):
             header = ws.cell(1, c).value
@@ -30,22 +25,16 @@ class ScheduleCountReport(BaseReport):
                 continue
             if header == "Время":
                 continue
-            # например: "Понедельник. 15.12.2025", "Вторник. 16.12.2025" и т.д.
             cols.append(c)
         return cols
 
     def _extract_subject(self, cell_value: str) -> str | None:
-        """
-        Из текста вида:
-        'Предмет: ...\nГруппа: ...\nПрепод.: ...'
-        достаем название предмета.
-        """
+
         if not isinstance(cell_value, str):
             return None
         if "Предмет:" not in cell_value:
             return None
 
-        # берем первую строку после "Предмет:"
         m = self.SUBJECT_RE.search(cell_value)
         if not m:
             return None
@@ -57,10 +46,8 @@ class ScheduleCountReport(BaseReport):
         if not lesson_cols:
             return "Не смог найти колонки с занятиями (дни недели) в первой строке файла."
 
-        # group -> Counter(subject -> count)
         group_counts: Dict[str, Counter] = defaultdict(Counter)
 
-        # соберем список групп в порядке появления
         groups_order: List[str] = []
         seen_groups = set()
 
@@ -85,7 +72,6 @@ class ScheduleCountReport(BaseReport):
         if not groups_order:
             return "В файле не найдено ни одной группы (колонка A)."
 
-        # формируем ответ
         lines: List[str] = []
         for group in groups_order:
             counts = group_counts.get(group, Counter())
@@ -105,7 +91,6 @@ class ScheduleCountReport(BaseReport):
 
             lines.append("")
 
-        # защита от слишком длинного сообщения (Telegram лимит ~4096 символов)
         result = "\n".join(lines).strip()
         if len(result) > 3800:
             result = result[:3800] + "\n…(сообщение обрезано, слишком много данных)"

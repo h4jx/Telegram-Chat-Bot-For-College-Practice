@@ -18,7 +18,6 @@ class TopicsFormatReport(BaseReport):
     key = "topics"
     title = "Отчет по темам занятия"
 
-    # Формат: “Урок № _. Тема: _”
     TOPIC_RE = re.compile(r"^\s*Урок\s*№\s*(\d+)\.\s*Тема:\s*(.+)\s*$", re.IGNORECASE)
 
     def __init__(self, max_items: int = 60, max_len: int = 200):
@@ -41,8 +40,6 @@ class TopicsFormatReport(BaseReport):
                     if not text:
                         continue
 
-                    # чтобы не ругаться на любые строки, проверяем только те,
-                    # которые хотя бы похожи на тему
                     looks_like_topic = ("урок" in text.lower()) or ("тема" in text.lower())
                     if looks_like_topic and not self.TOPIC_RE.match(text):
                         clipped = text if len(text) <= self.max_len else text[: self.max_len] + "…"

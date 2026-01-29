@@ -21,16 +21,29 @@ class ModeHandlers:
         self.user_state[message.from_user.id] = "topics"
         await message.answer(
             "📘 Режим «Отчёт по темам занятия» включён.\n"
-            "Пожалуйста, отправьте Excel-файл (.xlsx)."
+            "Пожалуйста, отправьте Excel-файл."
         )
 
     async def schedule(self, message):
         self.user_state[message.from_user.id] = "schedule"
         await message.answer(
             "📅 Режим «Отчёт по расписанию» включён.\n"
-            "Пожалуйста, отправьте Excel-файл (.xlsx)."
+            "Теперь отправьте Excel-файл."
         )
 
+    async def students(self, message):
+        self.user_state[message.from_user.id] = "students"
+        await message.answer(
+            "✅ Режим /students включён.\n"
+            "Теперь отправьте Excel-файл."
+        )
+
+    async def attendance(self, message):
+        self.user_state[message.from_user.id] = "attendance"
+        await message.answer(
+            "✅ Режим /attendance включён.\n"
+            "Теперь отправьте Excel-файл."
+        )
 
 async def main():
     bot = Bot(token=BOT_TOKEN)
@@ -42,12 +55,17 @@ async def main():
     reports = ReportService()
     doc_handler = DocumentHandler(loader=loader, reports=reports, user_state=user_state)
 
+    # /start
     dp.message.register(start_command, CommandStart())
 
+    # команды
     mode_handlers = ModeHandlers(user_state)
     dp.message.register(mode_handlers.topics, Command("topics"))
     dp.message.register(mode_handlers.schedule, Command("schedule"))
+    dp.message.register(mode_handlers.students, Command("students"))
+    dp.message.register(mode_handlers.attendance, Command("attendance"))
 
+    # загрузка Excel
     dp.message.register(doc_handler.handle, F.document)
 
     await dp.start_polling(bot)
@@ -55,4 +73,3 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-
