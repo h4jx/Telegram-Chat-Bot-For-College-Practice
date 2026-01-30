@@ -12,39 +12,6 @@ from services.report_service import ReportService
 
 logging.basicConfig(level=logging.INFO)
 
-
-class ModeHandlers:
-    def __init__(self, user_state: dict[int, str]):
-        self.user_state = user_state
-
-    async def topics(self, message):
-        self.user_state[message.from_user.id] = "topics"
-        await message.answer(
-            "📘 Режим «Отчёт по темам занятия» включён.\n"
-            "Пожалуйста, отправьте Excel-файл."
-        )
-
-    async def schedule(self, message):
-        self.user_state[message.from_user.id] = "schedule"
-        await message.answer(
-            "📅 Режим «Отчёт по расписанию» включён.\n"
-            "Теперь отправьте Excel-файл."
-        )
-
-    async def students(self, message):
-        self.user_state[message.from_user.id] = "students"
-        await message.answer(
-            "✅ Режим /students включён.\n"
-            "Теперь отправьте Excel-файл."
-        )
-
-    async def attendance(self, message):
-        self.user_state[message.from_user.id] = "attendance"
-        await message.answer(
-            "✅ Режим /attendance включён.\n"
-            "Теперь отправьте Excel-файл."
-        )
-
 async def main():
     bot = Bot(token=BOT_TOKEN)
     dp = Dispatcher()
@@ -73,3 +40,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
